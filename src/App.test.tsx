@@ -1,7 +1,7 @@
 /* eslint-disable testing-library/no-node-access */
 /* eslint-disable testing-library/no-container */
 import { render, screen, fireEvent } from "@testing-library/react";
-import TopModal from "./App";
+import TopModal from "./components/TopModal/TopModal";
 
 interface defaultProps {
   autoId: number;
