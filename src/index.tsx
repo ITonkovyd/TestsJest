@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
   <React.StrictMode>
     <App
@@ -19,5 +19,5 @@ root.render(
       salonDateClosed={"2024-09-17"}
       vin={"1234567890ABCDEFG"}
     />
-  </React.StrictMode>
+  </React.StrictMode>,
 );

@@ -1,7 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, ChangeEvent } from "react";
 
-const TopModal = ({ setModalShow, topLevel, langId, salonDateClosed }) => {
-  const [state, setState] = useState({
+interface TopModalProps {
+  autoId: number;
+  setModalShow: (show: boolean) => void;
+  topLevel: { top: number; expire?: string };
+  langId: number;
+  salonDateClosed: string;
+  vin: string;
+}
+
+interface State {
+  currentTop: number;
+  currentTimePeriod: number;
+  currentPosition: string;
+  dateExpire: string;
+}
+
+interface ErrorState {
+  top: boolean;
+  period: boolean;
+}
+
+const TopModal: React.FC<TopModalProps> = ({ setModalShow, topLevel, langId, salonDateClosed }) => {
+  const [state, setState] = useState<State>({
     currentTop: topLevel?.top > 0 ? topLevel?.top : 4,
     currentTimePeriod: topLevel?.top > 0 ? 1 : 4,
     currentPosition: "",
@@ -9,15 +30,15 @@ const TopModal = ({ setModalShow, topLevel, langId, salonDateClosed }) => {
   });
 
   const { currentTop, currentTimePeriod, currentPosition, dateExpire } = state;
-  const [error, setError] = useState({ top: false, period: false });
+  const [error, setError] = useState<ErrorState>({ top: false, period: false });
   const [firstLoad, setFirstLoad] = useState(true);
 
-  const onInputChange = (e) => {
+  const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value: inputValue } = e.target;
     let value = parseInt(inputValue);
     const maxDaysToBuy = Math.ceil((new Date(salonDateClosed).getTime() - currentDate.getTime()) / (1000 * 3600 * 24));
     const maxPeriod = maxDaysToBuy > 60 ? 60 : maxDaysToBuy;
-    let keyToUpdate;
+    let keyToUpdate: any;
 
     switch (name) {
       case "levelTop":
@@ -49,14 +70,14 @@ const TopModal = ({ setModalShow, topLevel, langId, salonDateClosed }) => {
   const endHoliday = new Date(currentDate.getFullYear(), 1, 24, 23, 59, 59);
   const isHolidayDate = currentDate >= startHoliday && currentDate <= endHoliday;
 
-  const getMonthNameShort = (month, langId) => {
+  const getMonthNameShort = (month: number, langId: number) => {
     const uk = ["січ", "лют", "бер", "кві", "трав", "черв", "лип", "серп", "вер", "жовт", "лист", "груд"];
     const ru = ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сент", "окт", "ноя", "дек"];
 
     return Number(langId) === 4 ? uk[month - 1] : ru[month - 1];
   };
 
-  const getRandomPosition = () => {
+  const getRandomPosition = (): Promise<{ position: string }> => {
     return new Promise(resolve => {
       const randomPosition = Math.floor(Math.random() * 100) + 1;
       setTimeout(() => {
@@ -71,7 +92,7 @@ const TopModal = ({ setModalShow, topLevel, langId, salonDateClosed }) => {
     });
   };
 
-  function datext(numeric, one, two, many) {
+  function datext(numeric: number, one: string, two: string, many: string): string {
     numeric = Math.abs(numeric);
     if (numeric % 100 === 1 || (numeric % 100 > 20 && numeric % 10 === 1)) return one;
     if (numeric % 100 === 2 || (numeric % 100 > 20 && numeric % 10 === 2)) return two;
